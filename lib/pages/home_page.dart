@@ -62,14 +62,67 @@ class _HomePageState extends State<HomePage> {
                     elevation: 1, // Add elevation for a shadow effect
                     margin:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: ListTile(
-                      title: Text(
-                        noteText,
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
+                    child: Dismissible(
+                      key: Key(docId), // Unique key for each Dismissible widget
+                      direction: DismissDirection
+                          .endToStart, // Specify the swipe direction
+                      background: Container(
+                        color: Colors.red, // Background color for delete action
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
-                      // You can add more styling or additional widgets here
+                      confirmDismiss: (direction) async {
+                        if (direction == DismissDirection.endToStart) {
+                          // Display a confirmation dialog
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Confirm"),
+                                content: const Text(
+                                    "Are you sure you want to delete this note?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text("CANCEL"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // Delete the note and dismiss the dialog
+                                      firestoreService.deleteNote(docId);
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    child: const Text("DELETE"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                        return false;
+                      },
+                      onDismissed: (direction) {
+                        if (direction == DismissDirection.endToStart) {
+                          // Do nothing here, deletion is handled in confirmDismiss
+                        }
+                      },
+                      child: ListTile(
+                        title: Text(
+                          noteText,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            // Add functionality for editing the note
+                          },
+                        ),
+                        // You can add more styling or additional widgets here
+                      ),
                     ),
                   );
                 },

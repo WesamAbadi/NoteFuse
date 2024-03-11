@@ -19,7 +19,10 @@ class FirestoreService {
       'timestamp': DateTime.now(),
     });
   }
-  //Delete note
 
+  //Delete note
+  Future<void> deleteNote(String docID) {
+    return notes.doc(docID).delete();
+  }
   //Update note
 }
