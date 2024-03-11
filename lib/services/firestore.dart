@@ -25,4 +25,10 @@ class FirestoreService {
     return notes.doc(docID).delete();
   }
   //Update note
+
+  Future<void> updateNote(String docID, String newNote) {
+    return notes
+        .doc(docID)
+        .update({'note': newNote, 'timestamp': DateTime.now()});
+  }
 }
