@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1003471611746",
+    "project_id": "notefuse",
+    "storage_bucket": "notefuse.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003471611746:android:96ae141a6237dd99e8ee3b",
+        "android_client_info": {
+          "package_name": "com.example.note_fuse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf0Ah4-CvDyTEEx40oN_8nW8VpX7jgeCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
