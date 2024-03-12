@@ -16,12 +16,16 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController textController = TextEditingController();
 
+  bool _switchValue = false;
+
   void openAddNoteDialog({String? docId, String? noteText}) {
     textController.text = noteText ?? "";
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
               content: TextField(
+                maxLines: null,
+                autofocus: true,
                 controller: textController,
                 decoration: const InputDecoration(hintText: "Add a note"),
               ),
@@ -47,15 +51,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(
-              icon: const Icon(
-                  Icons.settings_rounded), // Replace with your desired icon
-              onPressed: () {
-                // Add your onPressed logic here
-              },
-            ),
             const SizedBox(
-                width: 100), // Add spacing between the button and title
+                width: 80), // Add spacing between the button and title
             const Text("Note Fuse"), // Your title
           ],
         ),
@@ -68,6 +65,42 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(padding: EdgeInsets.zero, children: [
+          Container(
+            height: 100,
+            child: const DrawerHeader(
+              child: Text('Settings'),
+            ),
+          ),
+          ListTile(
+            title: const Text('Item 1'),
+            onTap: () {
+              // Handle item 1 tap
+            },
+          ),
+          ListTile(
+            title: const Text('Item 2'),
+            onTap: () {
+              // Handle item 2 tap
+            },
+          ),
+          SwitchListTile(
+            title: const Text('Compact View'),
+            value:
+                _switchValue, // Provide the value of your switch (true/false)
+            onChanged: (bool value) {
+              // Update the state of the switch
+              setState(() {
+                _switchValue = value;
+              });
+
+              // Perform any action based on the switch state change
+              // For example, you can toggle some settings or perform some action
+            },
+          ),
+        ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {openAddNoteDialog()},
@@ -140,20 +173,24 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                       child: ListTile(
-                        title: Text(
-                          noteText,
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
+                        title: _switchValue
+                            ? Text(
+                                noteText.length > 30
+                                    ? '${noteText.substring(0, 30)}...'
+                                    : noteText,
+                                style: const TextStyle(fontSize: 14),
+                                maxLines: 1,
+                              )
+                            : Text(
+                                noteText,
+                                style: const TextStyle(fontSize: 14),
+                              ),
                         trailing: IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
                             openAddNoteDialog(docId: docId, noteText: noteText);
-                            // Add functionality for editing the note
                           },
                         ),
-                        // You can add more styling or additional widgets here
                       ),
                     ),
                   );
