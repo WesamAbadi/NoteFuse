@@ -75,17 +75,33 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           ListTile(
-            title: const Text('Item 1'),
+            title: FutureBuilder<Map<String, String>>(
+              future: firestoreService.getAppVersion(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // While data is being fetched, display a loading indicator
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  // If there's an error, display an error message
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  // Once data is fetched successfully, display the app version
+                  final version = snapshot.data?['version'] ?? '';
+                  return Text('App version: $version');
+                }
+              },
+            ),
             onTap: () {
               // Handle item 1 tap
             },
           ),
-          ListTile(
-            title: const Text('Item 2'),
-            onTap: () {
-              // Handle item 2 tap
-            },
-          ),
+
+          // ListTile(
+          //   title: const Text('Item 2'),
+          //   onTap: () {
+          //     // Handle item 2 tap
+          //   },
+          // ),
           SwitchListTile(
             title: const Text('Compact View'),
             value:

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:note_fuse/firebase_options.dart';
-import 'package:dynamic_color/dynamic_color.dart';
+// import 'package:dynamic_color/dynamic_color.dart';
 
 import 'pages/main_page.dart';
-import 'pages/home_page.dart';
+// import 'pages/home_page.dart';
+// import 'services/firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       //home: MainPage(),
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange)),
-      home: HomePage(),
+      home: MainPage(),
     );
   }
 }

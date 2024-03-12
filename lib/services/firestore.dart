@@ -2,6 +2,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreService {
+// Get the version feild in the app_info collection
+  Future<Map<String, String>> getAppVersion() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('versions')
+          .doc('latest')
+          .get();
+
+      // Retrieve the 'version' and 'url' fields from the document
+      final version = snapshot.data()?['version'] ?? '';
+      final url = snapshot.data()?['url'] ?? '';
+
+      // Return a map containing both the version and the URL
+      return {'version': version, 'url': url};
+    } catch (e) {
+      print('Error getting app version: $e');
+      return {
+        'version': '',
+        'url': ''
+      }; // Return empty values in case of an error
+    }
+  }
+
   // Get reference to the users collection
   final CollectionReference users =
       FirebaseFirestore.instance.collection('users');
