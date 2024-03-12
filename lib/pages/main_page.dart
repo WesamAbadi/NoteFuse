@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late FirestoreService _firestoreService;
-  late String currentAppVersion = '1.1';
+  late String currentAppVersion = '1.11';
   late String firestoreAppVersion;
   late String firebaseUrl;
 

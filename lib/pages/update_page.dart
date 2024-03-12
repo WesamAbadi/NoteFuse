@@ -10,6 +10,8 @@ class UpdatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var linkUrl = Uri.parse(url);
+    var releaseNotesUrl =
+        Uri.parse('https://github.com/WesamAbadi/NoteFuse/releases');
 
     return Scaffold(
       appBar: AppBar(),
@@ -25,18 +27,18 @@ class UpdatePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Update Available',
+                'Update Available!',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10), // Add a gap of 10 pixels
               Text(
-                'This update is mandatory due to crucial changes in the app',
+                'This update is mandatory due to crucial changes in the app.',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
               ),
-              SizedBox(height: 50), // Add a larger gap of 20 pixels
+              SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  // Implement download functionality
+                  launchUrl(linkUrl);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
@@ -49,26 +51,10 @@ class UpdatePage extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  // Implement download functionality
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: Text(
-                  url,
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              SizedBox(height: 10), // Add a gap of 10 pixels
+              SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  launchUrl(
-                      linkUrl); // Launch the URL when the button is pressed
+                  launchUrl(releaseNotesUrl);
                 },
                 child: Text(
                   'Read More',
