@@ -66,6 +66,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1003471611746',
     projectId: 'notefuse',
     storageBucket: 'notefuse.appspot.com',
+    iosClientId: '1003471611746-u7e4d8smvugv1b1lraj2216isc5hn9k1.apps.googleusercontent.com',
     iosBundleId: 'com.example.noteFuse',
   );
 
@@ -75,6 +76,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1003471611746',
     projectId: 'notefuse',
     storageBucket: 'notefuse.appspot.com',
+    iosClientId: '1003471611746-97h1ogh3va0h9f6op9vl3v8smu07itei.apps.googleusercontent.com',
     iosBundleId: 'com.example.noteFuse.RunnerTests',
   );
 }

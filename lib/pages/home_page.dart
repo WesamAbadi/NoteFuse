@@ -1,5 +1,7 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:google_sign_in/google_sign_in.dart";
 import "package:note_fuse/services/firestore.dart";
 
 class HomePage extends StatefulWidget {
@@ -42,7 +44,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Note Fuse")),
+      appBar: AppBar(
+        title: Center(child: const Text("Note Fuse")),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () async {
+                await GoogleSignIn().signOut();
+                FirebaseAuth.instance.signOut();
+              })
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {openAddNoteDialog()},
         child: const Icon(Icons.note_add),

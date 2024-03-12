@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:note_fuse/firebase_options.dart';
 
+import 'pages/main_page.dart';
 import 'pages/home_page.dart';
 
 void main() async {
@@ -17,6 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
+      //for debugging purposes, keep it commented out
+      //home: MainPage(),
       home: HomePage(),
     );
   }
