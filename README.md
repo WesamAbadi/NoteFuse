@@ -1,16 +1,26 @@
-# note_fuse
+# Note Fuse 
 
-A new Flutter project.
+Note Fuse is a cross-platform note-taking app built with flutter.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- [x] Simplified note-taking interface.
+- [x] Secure cloud synchronization.
+- [ ] Easy organization of notes.
+- [ ] Support for rich text formatting.
+- [ ] Convenient search functionality.
+- [ ] Customizable themes for personalization.
+- [ ] Seamless integration with Google services.
 
-A few resources to get you started if this is your first Flutter project:
+## Installation
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+flutter run
+```
+
+## Releases
+
+- [v1.0.0 (2024-03-12)](https://github.com/WesamAbadi/NoteFuse/releases/download/Beta/v1.0.release.apk): Initial release with basic note-taking functionality.
