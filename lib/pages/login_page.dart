@@ -29,7 +29,7 @@ class LoginPage extends StatelessWidget {
         ),
       ),
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Center(child: Text("Login Page")),
       ),
     );
   }

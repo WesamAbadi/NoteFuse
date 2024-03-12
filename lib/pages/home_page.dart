@@ -45,14 +45,28 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: const Text("Note Fuse")),
+        title: Row(
+          children: [
+            IconButton(
+              icon: const Icon(
+                  Icons.settings_rounded), // Replace with your desired icon
+              onPressed: () {
+                // Add your onPressed logic here
+              },
+            ),
+            const SizedBox(
+                width: 100), // Add spacing between the button and title
+            const Text("Note Fuse"), // Your title
+          ],
+        ),
         actions: [
           IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () async {
-                await GoogleSignIn().signOut();
-                FirebaseAuth.instance.signOut();
-              })
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              GoogleSignIn().signOut();
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -62,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       body: StreamBuilder<QuerySnapshot>(
           stream: firestoreService.readNotes(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
               List notesList = snapshot.data!.docs;
 
               return ListView.builder(
@@ -147,7 +161,7 @@ class _HomePageState extends State<HomePage> {
               );
             } else {
               return const Center(
-                child: Text("No notes found"),
+                child: Text("No notes found, add some!"),
               );
             }
           }),
