@@ -10,31 +10,8 @@ class UpdatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var linkUrl = Uri.parse(url);
     var releaseNotesUrl =
         Uri.parse('https://github.com/WesamAbadi/NoteFuse/releases');
-
-    void updateTest(BuildContext context) async {
-      try {
-        //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
-        OtaUpdate()
-            .execute(
-          url,
-          // OPTIONAL
-          destinationFilename: 'NoteFuse.apk',
-          //OPTIONAL, ANDROID ONLY - ABILITY TO VALIDATE CHECKSUM OF FILE:
-          // sha256checksum:
-          //     "d6da28451a1e15cf7a75f2c3f151befad3b80ad0bb232ab15c20897e54f21478",
-        )
-            .listen(
-          (OtaEvent event) {
-            // Handle events as needed
-          },
-        );
-      } catch (e) {
-        print('Failed to make OTA update. Details: $e');
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(),
@@ -61,8 +38,13 @@ class UpdatePage extends StatelessWidget {
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  // launchUrl(linkUrl);
-                  updateTest(context);
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return UpdateDialog(url: url);
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
@@ -90,5 +72,51 @@ class UpdatePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class UpdateDialog extends StatefulWidget {
+  final String url;
+
+  const UpdateDialog({Key? key, required this.url}) : super(key: key);
+
+  @override
+  _UpdateDialogState createState() => _UpdateDialogState();
+}
+
+class _UpdateDialogState extends State<UpdateDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Downloading update"),
+      content: LinearProgressIndicator(),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    tryOtaUpdate();
+  }
+
+  Future<void> tryOtaUpdate() async {
+    try {
+      OtaUpdate()
+          .execute(
+        widget.url,
+        destinationFilename: 'NoteFuse.apk',
+      )
+          .listen(
+        (OtaEvent event) {
+          // Handle events as needed
+          if (event.status == OtaStatus.DOWNLOADING) {
+            // Update the progress of the dialog
+            setState(() {});
+          }
+        },
+      );
+    } catch (e) {
+      print('Failed to make OTA update. Details: $e');
+    }
   }
 }
