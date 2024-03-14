@@ -92,16 +92,26 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             onTap: () {
-              // Handle item 1 tap
+              // Show an alert dialog when tapped
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Good news!'),
+                    content: Text('This is the latest version.'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('Close'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
-
-          // ListTile(
-          //   title: const Text('Item 2'),
-          //   onTap: () {
-          //     // Handle item 2 tap
-          //   },
-          // ),
           SwitchListTile(
             title: const Text('Compact View'),
             value:

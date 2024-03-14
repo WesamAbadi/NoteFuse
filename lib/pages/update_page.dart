@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ota_update/ota_update.dart';
 
 class UpdatePage extends StatelessWidget {
   final String version;
@@ -9,9 +10,31 @@ class UpdatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var linkUrl = Uri.parse(url);
+    // var linkUrl = Uri.parse(url);
     var releaseNotesUrl =
         Uri.parse('https://github.com/WesamAbadi/NoteFuse/releases');
+
+    void updateTest(BuildContext context) async {
+      try {
+        //LINK CONTAINS APK OF FLUTTER HELLO WORLD FROM FLUTTER SDK EXAMPLES
+        OtaUpdate()
+            .execute(
+          url,
+          // OPTIONAL
+          destinationFilename: 'NoteFuse.apk',
+          //OPTIONAL, ANDROID ONLY - ABILITY TO VALIDATE CHECKSUM OF FILE:
+          // sha256checksum:
+          //     "d6da28451a1e15cf7a75f2c3f151befad3b80ad0bb232ab15c20897e54f21478",
+        )
+            .listen(
+          (OtaEvent event) {
+            // Handle events as needed
+          },
+        );
+      } catch (e) {
+        print('Failed to make OTA update. Details: $e');
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(),
@@ -38,7 +61,8 @@ class UpdatePage extends StatelessWidget {
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  launchUrl(linkUrl);
+                  // launchUrl(linkUrl);
+                  updateTest(context);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),

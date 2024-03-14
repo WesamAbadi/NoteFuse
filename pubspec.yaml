@@ -42,6 +42,7 @@ dependencies:
   dynamic_color: ^1.7.0
   package_info_plus: ^5.0.1
   url_launcher: ^6.2.5
+  ota_update: ^6.0.0
   
 
 dev_dependencies:
