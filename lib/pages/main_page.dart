@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:note_fuse/pages/home_page.dart';
 import 'package:note_fuse/pages/login_page.dart';
 import 'package:note_fuse/pages/update_page.dart';
-
-import '../services/firestore.dart'; // Assuming you have the FirestoreService imported
+import '../services/firestore.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key});
@@ -15,9 +14,10 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late FirestoreService _firestoreService;
-  late String currentAppVersion = '1.11';
+  late String currentAppVersion = '1.22';
   late String firestoreAppVersion;
   late String firebaseUrl;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -31,38 +31,93 @@ class _MainPageState extends State<MainPage> {
       final versionInfo = await _firestoreService.getAppVersion();
       final version = versionInfo['version'];
       final url = versionInfo['url'];
+      final mandatory = versionInfo['mandatory'];
+      final mandatoryBool = mandatory == 'true';
 
       firestoreAppVersion = version ?? '';
       firebaseUrl = url ?? '';
-      if (version != null && url != null) {
+
+      if (version != null && url != null && mandatory != null) {
         if (version != currentAppVersion) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => UpdatePage(version: version, url: url),
-            ),
-          );
+          if (mandatoryBool) {
+            await Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => UpdatePage(
+                  version: version,
+                  url: url,
+                  mandatory: mandatoryBool,
+                ),
+              ),
+            );
+          } else {
+            // If update is not mandatory, let the user decide whether to update
+            final shouldUpdate = await showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: Text('Update Available'),
+                content:
+                    Text('An update is available. Do you want to update now?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text('Skip'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text('Update'),
+                  ),
+                ],
+              ),
+            );
+
+            // If the user chooses to update, navigate to the UpdatePage
+            if (shouldUpdate == true) {
+              await Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => UpdatePage(
+                    version: version,
+                    url: url,
+                    mandatory: mandatoryBool,
+                  ),
+                ),
+              );
+            }
+          }
         }
       }
     } catch (error) {
       print('Error fetching app version: $error');
+    } finally {
+      // Set isLoading to false once the version check is complete
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (true) {
-            if (snapshot.hasData) {
-              return HomePage();
-            } else {
-              return LoginPage();
-            }
-          }
-        },
-      ),
+      body: isLoading // Check isLoading flag
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.waiting) {
+                  if (snapshot.hasData) {
+                    return HomePage();
+                  } else {
+                    return LoginPage();
+                  }
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
     );
   }
 }

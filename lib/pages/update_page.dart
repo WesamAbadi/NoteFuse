@@ -5,7 +5,12 @@ import 'package:ota_update/ota_update.dart';
 class UpdatePage extends StatelessWidget {
   final String version;
   final String url;
-  const UpdatePage({Key? key, required this.version, required this.url})
+  final bool mandatory;
+  const UpdatePage(
+      {Key? key,
+      required this.version,
+      required this.url,
+      this.mandatory = false})
       : super(key: key);
 
   @override
@@ -30,10 +35,16 @@ class UpdatePage extends StatelessWidget {
                 'Update Available!',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10), // Add a gap of 10 pixels
+              SizedBox(height: 10),
               Text(
-                'This update is mandatory due to crucial changes in the app.',
+                mandatory == true
+                    ? 'This update is mandatory.'
+                    : "This update is optional.",
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+              ),
+              Text(
+                'All your data will be saved automatically.',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
               ),
               SizedBox(height: 50),
               ElevatedButton(

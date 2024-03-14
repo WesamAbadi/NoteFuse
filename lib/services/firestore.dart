@@ -13,15 +13,15 @@ class FirestoreService {
       // Retrieve the 'version' and 'url' fields from the document
       final version = snapshot.data()?['version'] ?? '';
       final url = snapshot.data()?['url'] ?? '';
+      final mandatory = snapshot.data()?['mandatory']?.toString() ??
+          'false'; // Convert to string
 
-      // Return a map containing both the version and the URL
-      return {'version': version, 'url': url};
+      // Return a map containing both the version, the URL, and the mandatory status as strings
+      return {'version': version, 'url': url, 'mandatory': mandatory};
     } catch (e) {
       print('Error getting app version: $e');
-      return {
-        'version': '',
-        'url': ''
-      }; // Return empty values in case of an error
+      // Return default values in case of an error
+      return {'version': '', 'url': '', 'mandatory': 'false'}; // Return strings
     }
   }
 

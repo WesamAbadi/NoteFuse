@@ -51,9 +51,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Row(
           children: [
-            const SizedBox(
-                width: 80), // Add spacing between the button and title
-            const Text("Note Fuse"), // Your title
+            const SizedBox(width: 80),
+            const Text("Note Fuse"),
           ],
         ),
         actions: [
@@ -78,21 +77,15 @@ class _HomePageState extends State<HomePage> {
             title: FutureBuilder<Map<String, String>>(
               future: firestoreService.getAppVersion(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // While data is being fetched, display a loading indicator
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  // If there's an error, display an error message
+                if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  // Once data is fetched successfully, display the app version
                   final version = snapshot.data?['version'] ?? '';
                   return Text('App version: $version');
                 }
               },
             ),
             onTap: () {
-              // Show an alert dialog when tapped
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -114,16 +107,12 @@ class _HomePageState extends State<HomePage> {
           ),
           SwitchListTile(
             title: const Text('Compact View'),
-            value:
-                _switchValue, // Provide the value of your switch (true/false)
+            value: _switchValue,
             onChanged: (bool value) {
               // Update the state of the switch
               setState(() {
                 _switchValue = value;
               });
-
-              // Perform any action based on the switch state change
-              // For example, you can toggle some settings or perform some action
             },
           ),
         ]),
@@ -135,7 +124,11 @@ class _HomePageState extends State<HomePage> {
       body: StreamBuilder<QuerySnapshot>(
           stream: firestoreService.readNotes(),
           builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
               List notesList = snapshot.data!.docs;
 
               return ListView.builder(
@@ -149,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                   String noteText = noteData['note'];
 
                   return Card(
-                    elevation: 1, // Add elevation for a shadow effect
+                    elevation: 1,
                     margin:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Dismissible(
@@ -194,9 +187,7 @@ class _HomePageState extends State<HomePage> {
                         return false;
                       },
                       onDismissed: (direction) {
-                        if (direction == DismissDirection.endToStart) {
-                          // Do nothing here, deletion is handled in confirmDismiss
-                        }
+                        if (direction == DismissDirection.endToStart) {}
                       },
                       child: ListTile(
                         title: _switchValue
