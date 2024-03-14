@@ -36,53 +36,14 @@ class _MainPageState extends State<MainPage> {
 
       firestoreAppVersion = version ?? '';
       firebaseUrl = url ?? '';
-
       if (version != null && url != null && mandatory != null) {
         if (version != currentAppVersion) {
-          if (mandatoryBool) {
-            await Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => UpdatePage(
-                  version: version,
-                  url: url,
-                  mandatory: mandatoryBool,
-                ),
-              ),
-            );
-          } else {
-            // If update is not mandatory, let the user decide whether to update
-            final shouldUpdate = await showDialog<bool>(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: Text('Update Available'),
-                content:
-                    Text('An update is available. Do you want to update now?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Text('Skip'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: Text('Update'),
-                  ),
-                ],
-              ),
-            );
-
-            // If the user chooses to update, navigate to the UpdatePage
-            if (shouldUpdate == true) {
-              await Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => UpdatePage(
-                    version: version,
-                    url: url,
-                    mandatory: mandatoryBool,
-                  ),
-                ),
-              );
-            }
-          }
+          await Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => UpdatePage(
+                  version: version, url: url, mandatory: mandatoryBool),
+            ),
+          );
         }
       }
     } catch (error) {

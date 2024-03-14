@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_fuse/pages/home_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ota_update/ota_update.dart';
 
@@ -6,12 +7,12 @@ class UpdatePage extends StatelessWidget {
   final String version;
   final String url;
   final bool mandatory;
-  const UpdatePage(
-      {Key? key,
-      required this.version,
-      required this.url,
-      this.mandatory = false})
-      : super(key: key);
+  const UpdatePage({
+    Key? key,
+    required this.version,
+    required this.url,
+    this.mandatory = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +38,9 @@ class UpdatePage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                mandatory == true
+                mandatory
                     ? 'This update is mandatory.'
-                    : "This update is optional.",
+                    : 'This update is optional.',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
               ),
               Text(
@@ -78,6 +79,21 @@ class UpdatePage extends StatelessWidget {
                   style: TextStyle(fontSize: 16, color: Colors.blue),
                 ),
               ),
+              if (!mandatory)
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Skip',
+                    style: TextStyle(fontSize: 16, color: Colors.blue),
+                  ),
+                ),
             ],
           ),
         ),
