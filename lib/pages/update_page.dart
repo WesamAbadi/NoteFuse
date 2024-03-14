@@ -4,11 +4,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ota_update/ota_update.dart';
 
 class UpdatePage extends StatelessWidget {
+  final String currentAppVersion;
   final String version;
   final String url;
   final bool mandatory;
   const UpdatePage({
     Key? key,
+    required this.currentAppVersion,
     required this.version,
     required this.url,
     this.mandatory = false,
@@ -20,7 +22,14 @@ class UpdatePage extends StatelessWidget {
         Uri.parse('https://github.com/WesamAbadi/NoteFuse/releases');
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.info),
+          onPressed: () {
+            launchUrl(releaseNotesUrl);
+          },
+        ),
+      ),
       body: Center(
         child: Container(
           width: 300,
@@ -47,7 +56,20 @@ class UpdatePage extends StatelessWidget {
                 'All your data will be saved automatically.',
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
               ),
-              SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  '$currentAppVersion ➜ $version',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.lightBlue, // Change color to your preference
+                    fontFamily:
+                        'Roboto', // Change font family to your preference
+                  ),
+                ),
+              ),
+              SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
                   showDialog(
@@ -70,15 +92,6 @@ class UpdatePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  launchUrl(releaseNotesUrl);
-                },
-                child: Text(
-                  'Read More',
-                  style: TextStyle(fontSize: 16, color: Colors.blue),
-                ),
-              ),
               if (!mandatory)
                 TextButton(
                   onPressed: () {
@@ -91,7 +104,7 @@ class UpdatePage extends StatelessWidget {
                   },
                   child: Text(
                     'Skip',
-                    style: TextStyle(fontSize: 16, color: Colors.blue),
+                    style: TextStyle(fontSize: 13, color: Colors.blue),
                   ),
                 ),
             ],

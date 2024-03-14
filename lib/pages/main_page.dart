@@ -41,7 +41,10 @@ class _MainPageState extends State<MainPage> {
           await Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => UpdatePage(
-                  version: version, url: url, mandatory: mandatoryBool),
+                  currentAppVersion: currentAppVersion,
+                  version: version,
+                  url: url,
+                  mandatory: mandatoryBool),
             ),
           );
         }
