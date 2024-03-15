@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   bool _compactView = false;
   bool _markdownView = true;
-
+  bool isBold = false;
   @override
   void initState() {
     super.initState();
@@ -45,24 +45,82 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: TextField(
-          maxLines: null,
-          autofocus: true,
-          controller: _textController,
-          decoration: const InputDecoration(hintText: 'Add a note'),
+        contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        content: SingleChildScrollView(
+          child: SizedBox(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  maxLines: null,
+                  autofocus: true,
+                  controller: _textController,
+                  decoration: const InputDecoration(hintText: 'Add a note'),
+                ),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
         ),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              if (docId == null) {
-                _firestoreService.addNote(_textController.text);
-              } else {
-                _firestoreService.updateNote(docId, _textController.text);
-              }
-              _textController.clear();
-              Navigator.pop(context);
-            },
-            child: const Text('Add'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  if (docId == null) {
+                    _firestoreService.addNote(_textController.text);
+                  } else {
+                    _firestoreService.updateNote(docId, _textController.text);
+                  }
+                  _textController.clear();
+                  Navigator.pop(context);
+                },
+                child: const Text('Add'),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          isBold = !isBold;
+                          if (isBold) {
+                            _textController.text += '**';
+                          } else {
+                            _textController.text += '** ';
+                          }
+                        },
+                        icon: Icon(Icons.format_bold),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _textController.text += '# ';
+                        },
+                        icon: Icon(Icons.format_size),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _textController.text += '## ';
+                        },
+                        icon: Icon(Icons.format_size_outlined),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _textController.text += '- ';
+                        },
+                        icon: Icon(Icons.format_list_bulleted),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -76,24 +134,21 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: 'edited on: ',
-                style: TextStyle(
-                    color: Colors.grey, fontSize: 11), // Change color here
-              ),
-              TextSpan(
-                text: '$formattedTimestamp',
-                style: TextStyle(fontSize: 11), // Default color
-              ),
-            ],
-          ),
+        title: Column(
+          children: [
+            Text('$formattedTimestamp', textAlign: TextAlign.center),
+            Divider(
+              thickness: 0,
+            ),
+          ],
+        ),
+        titleTextStyle: TextStyle(
+          fontSize: 11,
+          color: Colors.black,
         ),
         content: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(0),
             child: Container(
                 width: double.maxFinite,
                 child: _markdownView
@@ -301,32 +356,15 @@ class NoteItem extends StatelessWidget {
             onDelete();
           }
         },
-
-        // child: ListTile(
-        //   title: compactView
-        //       ? Text(
-        //           noteText.length > 30
-        //               ? '${noteText.substring(0, 30)}...'
-        //               : noteText,
-        //           style: const TextStyle(fontSize: 14),
-        //           maxLines: 1,
-        //         )
-        //       : Text(
-        //           noteText,
-        //           style: const TextStyle(fontSize: 14),
-        //         ),
-        //   trailing: IconButton(
-        //     icon: const Icon(Icons.edit),
-        //     onPressed: onEdit,
-        //   ),
-        // ),
-
         child: ListTile(
           onTap: () => onView(noteText),
           title: compactView
-              ? Text(noteText.length > 30
-                  ? '${noteText.substring(0, 30)}...'
-                  : noteText)
+              ? Text(
+                  noteText.length > 30
+                      ? '${noteText.substring(0, 30)}...'
+                      : noteText,
+                  maxLines: 2,
+                )
               : Text(noteText),
           trailing: IconButton(
             icon: const Icon(Icons.edit),
