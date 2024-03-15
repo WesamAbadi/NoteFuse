@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:note_fuse/services/firestore.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   final FirestoreService _firestoreService = FirestoreService();
   final TextEditingController _textController = TextEditingController();
   bool _compactView = false;
+  bool _markdownView = true;
 
   void _openAddNoteDialog({String? docId, String? noteText}) {
     _textController.text = noteText ?? '';
@@ -39,6 +42,27 @@ class _HomePageState extends State<HomePage> {
               Navigator.pop(context);
             },
             child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openViewNoteDialog(String noteText, Timestamp timestamp) {
+    String formattedTimestamp =
+        DateFormat.yMMMMd().add_jm().format(timestamp.toDate());
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Note ($formattedTimestamp)'),
+        content: Text(noteText),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Close'),
           ),
         ],
       ),
@@ -111,6 +135,15 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
+            SwitchListTile(
+              title: const Text('Markdown View'),
+              value: _markdownView,
+              onChanged: (bool value) {
+                setState(() {
+                  _markdownView = value;
+                });
+              },
+            ),
           ],
         ),
       ),
@@ -136,6 +169,7 @@ class _HomePageState extends State<HomePage> {
                 Map<String, dynamic> noteData =
                     note.data() as Map<String, dynamic>;
                 String noteText = noteData['note'];
+                Timestamp timestamp = noteData['timestamp'];
 
                 return NoteItem(
                   noteText: noteText,
@@ -143,6 +177,8 @@ class _HomePageState extends State<HomePage> {
                   onEdit: () =>
                       _openAddNoteDialog(docId: docId, noteText: noteText),
                   onDelete: () => _firestoreService.deleteNote(docId),
+                  onView: (noteText) =>
+                      _openViewNoteDialog(noteText, timestamp),
                 );
               },
             );
@@ -162,12 +198,14 @@ class NoteItem extends StatelessWidget {
   final bool compactView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final Function(String) onView;
 
   const NoteItem({
     required this.noteText,
     required this.compactView,
     required this.onEdit,
     required this.onDelete,
+    required this.onView,
     Key? key,
   }) : super(key: key);
 
@@ -217,19 +255,34 @@ class NoteItem extends StatelessWidget {
             onDelete();
           }
         },
+
+        // child: ListTile(
+        //   title: compactView
+        //       ? Text(
+        //           noteText.length > 30
+        //               ? '${noteText.substring(0, 30)}...'
+        //               : noteText,
+        //           style: const TextStyle(fontSize: 14),
+        //           maxLines: 1,
+        //         )
+        //       : Text(
+        //           noteText,
+        //           style: const TextStyle(fontSize: 14),
+        //         ),
+        //   trailing: IconButton(
+        //     icon: const Icon(Icons.edit),
+        //     onPressed: onEdit,
+        //   ),
+        // ),
+
         child: ListTile(
+          onTap: () => onView(noteText),
           title: compactView
-              ? Text(
-                  noteText.length > 30
+              ? MarkdownBody(
+                  data: noteText.length > 30
                       ? '${noteText.substring(0, 30)}...'
-                      : noteText,
-                  style: const TextStyle(fontSize: 14),
-                  maxLines: 1,
-                )
-              : Text(
-                  noteText,
-                  style: const TextStyle(fontSize: 14),
-                ),
+                      : noteText)
+              : MarkdownBody(data: noteText),
           trailing: IconButton(
             icon: const Icon(Icons.edit),
             onPressed: onEdit,
