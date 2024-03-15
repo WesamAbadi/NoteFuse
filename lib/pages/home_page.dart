@@ -76,12 +76,29 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Note ($formattedTimestamp)'),
+        title: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'edited on: ',
+                style: TextStyle(
+                    color: Colors.grey, fontSize: 11), // Change color here
+              ),
+              TextSpan(
+                text: '$formattedTimestamp',
+                style: TextStyle(fontSize: 11), // Default color
+              ),
+            ],
+          ),
+        ),
         content: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child:
-                _markdownView ? MarkdownBody(data: noteText) : Text(noteText),
+            child: Container(
+                width: double.maxFinite,
+                child: _markdownView
+                    ? MarkdownBody(data: noteText)
+                    : Text(noteText)),
           ),
         ),
         actions: [
