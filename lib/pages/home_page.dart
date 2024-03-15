@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:note_fuse/services/firestore.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,6 +19,26 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   bool _compactView = false;
   bool _markdownView = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  void _loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _compactView = prefs.getBool('compactView') ?? false;
+      _markdownView = prefs.getBool('markdownView') ?? true;
+    });
+  }
+
+  void _saveSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('compactView', _compactView);
+    prefs.setBool('markdownView', _markdownView);
+  }
 
   void _openAddNoteDialog({String? docId, String? noteText}) {
     _textController.text = noteText ?? '';
@@ -56,7 +77,13 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Note ($formattedTimestamp)'),
-        content: Text(noteText),
+        content: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child:
+                _markdownView ? MarkdownBody(data: noteText) : Text(noteText),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -132,6 +159,7 @@ class _HomePageState extends State<HomePage> {
               onChanged: (bool value) {
                 setState(() {
                   _compactView = value;
+                  _saveSettings();
                 });
               },
             ),
@@ -141,6 +169,7 @@ class _HomePageState extends State<HomePage> {
               onChanged: (bool value) {
                 setState(() {
                   _markdownView = value;
+                  _saveSettings();
                 });
               },
             ),
@@ -278,11 +307,10 @@ class NoteItem extends StatelessWidget {
         child: ListTile(
           onTap: () => onView(noteText),
           title: compactView
-              ? MarkdownBody(
-                  data: noteText.length > 30
-                      ? '${noteText.substring(0, 30)}...'
-                      : noteText)
-              : MarkdownBody(data: noteText),
+              ? Text(noteText.length > 30
+                  ? '${noteText.substring(0, 30)}...'
+                  : noteText)
+              : Text(noteText),
           trailing: IconButton(
             icon: const Icon(Icons.edit),
             onPressed: onEdit,
